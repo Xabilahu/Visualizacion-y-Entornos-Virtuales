@@ -11,25 +11,29 @@ En la práctica se van a trabajar especialmente los siguientes temas:
 
 ## 1. Geometría básica
 
-- Implementar las siguientes funciones incluidas en el fichero Math/line.cc:
+- Implementar las siguientes funciones incluidas en el fichero **Math/line.cc**:
+
     ```cpp
     void Line::setFromAtoB(const Vector3 & A, const Vector3 & B);
     Vector3 Line::at(float u) const;
     float Line::paramDistance(const Vector3 & P) const;
     float Line::distance(const Vector3 & P) const;
     ``` 
-- Implementar las siguientes funciones incluidas en el ficheroMath/intersect.cc:
+
+- Implementar las siguientes funciones incluidas en el fichero **Math/intersect.cc**:
+
     ```cpp
     int BSpherePlaneIntersect(const BSphere *bs, Plane *pl);
     int BBoxBBoxIntersect(const BBox *bba, const BBox *bbb );
     int BBoxPlaneIntersect(const BBox *theBBox, Plane *thePlane);
     ```
 
-Nota: Para visualizar los resultados de este apartado se utilizará el programaMath/test
+Nota: Para visualizar los resultados de este apartado se utilizará el programa **Math/test**.
 
 ## 2. Transformaciones geométricas
 
-- Implementar las siguientes funciones incluidas en el fichero Math/trfm3D.cc:
+- Implementar las siguientes funciones incluidas en el fichero **Math/trfm3D.cc**:
+
     ```cpp
     Vector3 Trfm3D::transformPoint(const Vector3 & P) const;
     Vector3 Trfm3D::transformVector(const Vector3 & V) const;
@@ -68,6 +72,7 @@ Nota: Para visualizar los resultados de este apartado se utilizará el programa 
 ## 4. Cámara
 
 - Implementar las siguientes funciones incluidas en el fichero **Camera/camera.cc**:
+
     ```cpp
     void PerspectiveCamera::updateProjection();
     void Camera::updateFrame();
@@ -76,10 +81,13 @@ Nota: Para visualizar los resultados de este apartado se utilizará el programa 
 ## 5. Avatar y colisiones
 
 - Implementar la siguiente función incluida en el fichero **Camera/avatar.cc** y comprobar que el avatar no se choca con los objetos de la escena.
+
     ```cpp
     bool Avatar::advance(float step);
     ```
+
 - Por ello, se va a implementar la siguiente función incluida en el fichero **Scene/node.cc**:
+
     ```cpp
     const Node *Node::checkCollision(const BSphere *bsph) const;
     ```
@@ -87,14 +95,18 @@ Nota: Para visualizar los resultados de este apartado se utilizará el programa 
 ## 6. Luces y materiales
 
 - Implementar la siguiente función incluida en el fichero **Shading/light.cc**:
+
     ```cpp
     void Light::placeScene();
     ```
+
 - Además, se debe añadir el código correspondiente a las siguientes luces en los ficheros:
+
     - **Shaders/pervertex.vert**
     - **Shaders/pervertex.frag**
 
 para las siguientes luces:
+
 - Una luz posicional (con atenuación de la luz).
 - Dos luces direccionales.
 - Una luz del tipo *spotlight* (sin atenuación de la luz) en la escena que se moverá con la cámara.
