@@ -13,20 +13,20 @@ En la práctica se van a trabajar especialmente los siguientes temas:
 
 - Implementar las siguientes funciones incluidas en el fichero **Math/line.cc**:
 
-    ```cpp
-    void Line::setFromAtoB(const Vector3 & A, const Vector3 & B);
-    Vector3 Line::at(float u) const;
-    float Line::paramDistance(const Vector3 & P) const;
-    float Line::distance(const Vector3 & P) const;
-    ``` 
+```cpp
+          void Line::setFromAtoB(const Vector3 & A, const Vector3 & B);
+          Vector3 Line::at(float u) const;
+          float Line::paramDistance(const Vector3 & P) const;
+          float Line::distance(const Vector3 & P) const;
+``` 
 
 - Implementar las siguientes funciones incluidas en el fichero **Math/intersect.cc**:
 
-    ```cpp
-    int BSpherePlaneIntersect(const BSphere *bs, Plane *pl);
-    int BBoxBBoxIntersect(const BBox *bba, const BBox *bbb );
-    int BBoxPlaneIntersect(const BBox *theBBox, Plane *thePlane);
-    ```
+```cpp
+          int BSpherePlaneIntersect(const BSphere *bs, Plane *pl);
+          int BBoxBBoxIntersect(const BBox *bba, const BBox *bbb );
+          int BBoxPlaneIntersect(const BBox *theBBox, Plane *thePlane);
+```
 
 Nota: Para visualizar los resultados de este apartado se utilizará el programa **Math/test**.
 
@@ -34,11 +34,11 @@ Nota: Para visualizar los resultados de este apartado se utilizará el programa 
 
 - Implementar las siguientes funciones incluidas en el fichero **Math/trfm3D.cc**:
 
-    ```cpp
-    Vector3 Trfm3D::transformPoint(const Vector3 & P) const;
-    Vector3 Trfm3D::transformVector(const Vector3 & V) const;
-    void Trfm3D::setRotAxis(const Vector3 & V, const Vector3 & P, float angle );
-    ```
+```cpp
+          Vector3 Trfm3D::transformPoint(const Vector3 & P) const;
+          Vector3 Trfm3D::transformVector(const Vector3 & V) const;
+          void Trfm3D::setRotAxis(const Vector3 & V, const Vector3 & P, float angle );
+```
 
 Nota: Para visualizar los resultados de este apartado se utilizará el programa **browser_gobj** y se realizará una modificación en **elshaderShader/dummy.vert**
 
@@ -73,32 +73,32 @@ Nota: Para visualizar los resultados de este apartado se utilizará el programa 
 
 - Implementar las siguientes funciones incluidas en el fichero **Camera/camera.cc**:
 
-    ```cpp
-    void PerspectiveCamera::updateProjection();
-    void Camera::updateFrame();
-    ```
+```cpp
+          void PerspectiveCamera::updateProjection();
+          void Camera::updateFrame();
+```
 
 ## 5. Avatar y colisiones
 
 - Implementar la siguiente función incluida en el fichero **Camera/avatar.cc** y comprobar que el avatar no se choca con los objetos de la escena.
 
-    ```cpp
-    bool Avatar::advance(float step);
-    ```
+```cpp
+          bool Avatar::advance(float step);
+```
 
 - Por ello, se va a implementar la siguiente función incluida en el fichero **Scene/node.cc**:
 
-    ```cpp
-    const Node *Node::checkCollision(const BSphere *bsph) const;
-    ```
+```cpp
+          const Node *Node::checkCollision(const BSphere *bsph) const;
+```
 
 ## 6. Luces y materiales
 
 - Implementar la siguiente función incluida en el fichero **Shading/light.cc**:
 
-    ```cpp
-    void Light::placeScene();
-    ```
+```cpp
+          void Light::placeScene();
+```
 
 - Además, se debe añadir el código correspondiente a las siguientes luces en los ficheros:
 
