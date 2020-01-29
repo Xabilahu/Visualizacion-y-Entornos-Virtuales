@@ -12,3 +12,7 @@ CMakeFiles/*
 project_libjpeg6b-6b-prefix/*
 libjpeg6b-6b-prefix/*
 libjpeg6b-6b/*
+Makefile
+compile_commands.json
+CMakeCache.txt
+cmake_install.cmake
