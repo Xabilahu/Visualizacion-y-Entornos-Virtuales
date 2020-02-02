@@ -17,39 +17,43 @@ Line & Line::operator=(const Line & line) {
 	return *this;
 }
 
-// @@ TODO: Set line to pass through two points A and B
+// @@ DONE: Set line to pass through two points A and B
 //
 // Note: Check than A and B are not too close!
 
 void Line::setFromAtoB(const Vector3 & A, const Vector3 & B) {
+	m_O = A;
+	m_d = B - A;
+	float norm = m_d.normalize();
+	assert(norm > Constants::distance_epsilon);
 }
 
-// @@ TODO: Give the point corresponding to parameter u
+// @@ DONE: Give the point corresponding to parameter u
 
 Vector3 Line::at(float u) const {
 	Vector3 res;
-
+	res = m_O + u * m_d;
 	return res;
 }
 
-// @@ TODO: Calculate the parameter 'u0' of the line point nearest to P
+// @@ DONE: Calculate the parameter 'u0' of the line point nearest to P
 //
 // u0 = D*(P-O) / D*D , where * == dot product
 
 float Line::paramDistance(const Vector3 & P) const {
 	float res = 0.0f;
-
+	res = m_d.dot((P - m_O)) / (m_d.dot(m_d));
 	return res;
 }
 
-// @@ TODO: Calculate the minimum distance 'dist' from line to P
+// @@ DONE: Calculate the minimum distance 'dist' from line to P
 //
 // dist = ||P - (O + uD)||
 // Where u = paramDistance(P)
 
 float Line::distance(const Vector3 & P) const {
 	float res = 0.0f;
-
+	res = (P - (m_O + paramDistance(P) * m_d)).length();
 	return res;
 }
 
