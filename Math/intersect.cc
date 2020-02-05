@@ -9,33 +9,82 @@
 /* | BBoxBBox       |          2 | */
 /* | BBoxPlane      |          4 | */
 
-// @@ TODO: test if a BSpheres intersects a plane.
+// @@ DONE: test if a BSpheres intersects a plane.
 //! Returns :
 //   +IREJECT outside
 //   -IREJECT inside
 //    IINTERSECT intersect
 
 int BSpherePlaneIntersect(const BSphere *bs, Plane *pl) {
-
+	if (pl->distance(bs->getPosition()) > bs->getRadius()){
+		if (pl->whichSide(bs->getPosition()) < 0) return -IREJECT;
+		else return +IREJECT;
+	} else return IINTERSECT;
 }
 
 
-// @@ TODO: test if two BBoxes intersect.
+// @@ DONE: test if two BBoxes intersect.
 //! Returns :
 //    IINTERSECT intersect
 //    IREJECT don't intersect
 
 int  BBoxBBoxIntersect(const BBox *bba, const BBox *bbb ) {
-
+	if (bba->m_min.x() > bbb->m_max.x() || bbb->m_min.x() > bba->m_max.x()) return IREJECT;
+	if (bba->m_min.y() > bbb->m_max.y() || bbb->m_min.y() > bba->m_max.y()) return IREJECT;
+	if (bba->m_min.z() > bbb->m_max.z() || bbb->m_min.z() > bba->m_max.z()) return IREJECT;
+	else return IINTERSECT;	
 }
 
-// @@ TODO: test if a BBox and a plane intersect.
+// @@ DONE: test if a BBox and a plane intersect.
 //! Returns :
 //   +IREJECT outside
 //   -IREJECT inside
 //    IINTERSECT intersect
 
 int  BBoxPlaneIntersect (const BBox *theBBox, Plane *thePlane) {
+	float x1, x2, y1, y2, angle, minAngle = 500;
+	Vector3 auxP1, auxP2, diagP1, diagP2;
+	Line diag;
+
+	for(int i = 0; i < 2; i++){
+
+		if (i == 0){ 
+			x1 = theBBox->m_max.x();
+			x2 = theBBox->m_min.x();
+		} else {
+			x1 = theBBox->m_min.x();
+			x2 = theBBox->m_max.x();
+		}
+
+		for (int j = 0; j < 2; j++){
+
+			if (j == 0) {
+				y1 = theBBox->m_max.y();
+				y2 = theBBox->m_min.y();
+			} else {
+				y1 = theBBox->m_min.y();
+				y2 = theBBox->m_max.y();
+			}
+
+			auxP1 = Vector3(x1, y1, theBBox->m_max.z());
+			auxP2 = Vector3(x2, y2, theBBox->m_min.z());
+			diag = Line();
+			diag.setFromAtoB(auxP1, auxP2);
+			angle = acosf((diag.m_d.dot(thePlane->m_n) / (diag.m_d.length() * thePlane->m_n.length())));
+
+			if (angle < minAngle) {
+				minAngle = angle;
+				diagP1 = auxP1;
+				diagP2 = auxP2;
+			}
+		}
+	}
+
+	int sideP1 = thePlane->whichSide(diagP1);
+	int sideP2 = thePlane->whichSide(diagP2);
+	
+	if (sideP1 == sideP2) return sideP1;
+	else return IINTERSECT;
 
 }
 
