@@ -267,9 +267,10 @@ void Node::addChild(Node *theChild) {
 
 	if (theChild == 0) return;
 	if (m_gObject) {
-		// node has a gObject, so print warning
+		printf("[W] Current node is a gObject, cannot addChild.");
 	} else {
-		// node does not have gObject, so attach child
+		m_children.push_front(theChild);
+		theChild->m_parent = this;		
 	}
 }
 
@@ -388,6 +389,17 @@ void Node::draw() {
 
 	/* =================== PUT YOUR CODE HERE ====================== */
 
+	if (m_gObject != 0) {
+		if (m_parent != 0) addTrfm(m_parent->m_placement);
+		m_gObject->applyTrfm(m_placement);
+		m_gObject->draw();
+	} else {
+		for(list<Node *>::iterator it = m_children.begin(), end = m_children.end(); it != end; ++it) {
+			Node *theChild = *it;
+			theChild->addTrfm(m_parent->m_placement);
+			theChild->draw();
+		}
+	}
 
 	/* =================== END YOUR CODE HERE ====================== */
 
