@@ -258,7 +258,7 @@ Node * Node::cycleChild(size_t idx) {
 	return 0;
 }
 
-// @@ TODO:
+// @@ DONE:
 //
 // Add a child to node
 // Print a warning (and do nothing) if node already has an gObject.
@@ -355,7 +355,7 @@ void Node::updateWC() {
 void Node::updateGS() {
 }
 
-// @@ TODO:
+// @@ DONE:
 // Draw a (sub)tree.
 //
 // These functions can be useful:
@@ -388,18 +388,19 @@ void Node::draw() {
 		BBoxGL::draw( m_containerWC );
 
 	/* =================== PUT YOUR CODE HERE ====================== */
+	rs->push(RenderState::modelview);
+	rs->addTrfm(RenderState::modelview, m_placement);
 
 	if (m_gObject != 0) {
-		if (m_parent != 0) addTrfm(m_parent->m_placement);
-		m_gObject->applyTrfm(m_placement);
 		m_gObject->draw();
 	} else {
 		for(list<Node *>::iterator it = m_children.begin(), end = m_children.end(); it != end; ++it) {
 			Node *theChild = *it;
-			theChild->addTrfm(m_parent->m_placement);
 			theChild->draw();
 		}
 	}
+
+	rs->pop(RenderState::modelview);
 
 	/* =================== END YOUR CODE HERE ====================== */
 
