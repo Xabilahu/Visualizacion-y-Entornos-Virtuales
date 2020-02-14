@@ -270,7 +270,8 @@ void Node::addChild(Node *theChild) {
 		printf("[W] Current node is a gObject, cannot addChild.");
 	} else {
 		m_children.push_front(theChild);
-		theChild->m_parent = this;		
+		theChild->m_parent = this;
+		updateGS();
 	}
 }
 
@@ -285,7 +286,7 @@ void Node::detach() {
 	theParent->propagateBBRoot();
 }
 
-// @@ TODO: auxiliary function
+// @@ DONE: auxiliary function
 //
 // given a node:
 // - update the BBox of the node (updateBB)
@@ -296,9 +297,13 @@ void Node::detach() {
 //    - placementWC of node and parents are up-to-date
 
 void Node::propagateBBRoot() {
+	if (m_parent != 0){
+		updateBB();
+		m_parent->propagateBBRoot();
+	}
 }
 
-// @@ TODO: auxiliary function
+// @@ DONE: auxiliary function
 //
 // given a node, update its BBox to World Coordinates so that it includes:
 //  - the BBox of the geometricObject it contains (if any)
@@ -324,9 +329,20 @@ void Node::propagateBBRoot() {
 //    See Recipe 1 in for knowing how to iterate through children.
 
 void Node::updateBB () {
+	if (m_gObject != 0) {
+		m_containerWC->clone(m_gObject->getContainer());
+		m_containerWC->transform(m_placementWC);
+	}
+	else {
+		m_containerWC->init();
+		for(list<Node *>::iterator it = m_children.begin(), end = m_children.end(); it != end; ++it) {
+			Node *theChild = *it;
+			m_containerWC->include(theChild->m_containerWC);
+		}
+	}
 }
 
-// @@ TODO: Update WC (world coordinates matrix) of a node and
+// @@ DONE: Update WC (world coordinates matrix) of a node and
 // its bounding box recursively updating all children.
 //
 // given a node:
@@ -342,9 +358,24 @@ void Node::updateBB () {
 //    See Recipe 1 in for knowing how to iterate through children.
 
 void Node::updateWC() {
+	if (m_parent == 0) m_placementWC->clone(m_placement);
+	else {
+		Trfm3D *composedTrfm = new Trfm3D();
+		composedTrfm->clone(m_parent->m_placementWC);
+		composedTrfm->add(m_placement);
+		m_placementWC->clone(composedTrfm);
+	}
+
+	for(list<Node *>::iterator it = m_children.begin(), end = m_children.end(); it != end; ++it) {
+		Node *theChild = *it;
+		theChild->updateWC();
+	}
+
+	updateBB();
+
 }
 
-// @@ TODO:
+// @@ DONE:
 //
 //  Update geometric state of a node.
 //
@@ -353,6 +384,8 @@ void Node::updateWC() {
 // - Propagate Bounding Box to root (propagateBBRoot), starting from the parent, if parent exists.
 
 void Node::updateGS() {
+	updateWC();
+	if (m_parent != 0) propagateBBRoot();
 }
 
 // @@ DONE:
