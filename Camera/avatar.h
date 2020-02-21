@@ -6,6 +6,7 @@
 #include "camera.h"
 #include "bsphere.h"
 #include "trfm3D.h"
+#include "node.h"
 
 class Avatar {
 
@@ -24,6 +25,8 @@ public:
 	 */
 
 	bool advance(float step);
+
+	bool isColliding(Node *n);
 
 	/**
 	 * Look left/right (depending on sign of angle)
