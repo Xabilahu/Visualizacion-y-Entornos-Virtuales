@@ -421,19 +421,18 @@ void Node::draw() {
 		BBoxGL::draw( m_containerWC );
 
 	/* =================== PUT YOUR CODE HERE ====================== */
-	rs->push(RenderState::modelview);
-	rs->addTrfm(RenderState::modelview, m_placementWC);
 
 	if (m_gObject != 0) {
+		rs->push(RenderState::modelview);
+		rs->addTrfm(RenderState::modelview, m_placementWC);
 		m_gObject->draw();
+		rs->pop(RenderState::modelview);
 	} else {
 		for(list<Node *>::iterator it = m_children.begin(), end = m_children.end(); it != end; ++it) {
 			Node *theChild = *it;
 			theChild->draw();
 		}
 	}
-
-	rs->pop(RenderState::modelview);
 
 	/* =================== END YOUR CODE HERE ====================== */
 
@@ -461,7 +460,7 @@ void Node::setCulled(bool culled) {
 void Node::frustumCull(Camera *cam) {
 }
 
-// @@ TODO: Check whether a BSphere (in world coordinates) intersects with a
+// @@ DONE: Check whether a BSphere (in world coordinates) intersects with a
 // (sub)tree.
 //
 // Return a pointer to the Node which collides with the BSphere. 0
@@ -474,6 +473,18 @@ void Node::frustumCull(Camera *cam) {
 const Node *Node::checkCollision(const BSphere *bsph) const {
 	if (!m_checkCollision) return 0;
 	/* =================== PUT YOUR CODE HERE ====================== */
+
+	if (m_gObject != 0 && BSphereBBoxIntersect(bsph, m_containerWC) == IINTERSECT) return this;
+
+	for(list<Node *>::const_iterator it = m_children.begin(), end = m_children.end();
+       it != end; ++it) {
+       const Node *theChild = *it;
+	   if (theChild->m_gObject != 0 && BSphereBBoxIntersect(bsph, theChild->m_containerWC) == IINTERSECT) return this;
+	   else {
+		   const Node *collidingNode = theChild->checkCollision(bsph);
+		   if (collidingNode != 0) return collidingNode;
+	   }
+   }
 
 	return 0; /* No collision */
 	/* =================== END YOUR CODE HERE ====================== */
