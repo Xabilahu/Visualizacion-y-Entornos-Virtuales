@@ -121,14 +121,18 @@ void OrthographicCamera::updateProjection() {
 	updateFrustumPlanes();
 }
 
-// @@ TODO:
+// @@ DONE:
 // * Given (near, far, aspectRatio, fovy), calculate the values of
 //   frustum (top, bottom, right, left).
 // * Also, update projection matrix (projTrfm)
 
 void PerspectiveCamera::updateProjection() {
 	/* =================== PUT YOUR CODE HERE ====================== */
-
+	m_top = m_near * tan(m_fovy / 2);
+	m_bottom = -1 * m_top;
+	m_right = m_aspectRatio * m_top;
+	m_left = -1 * m_right;
+	m_projTrfm->setFrustum(m_left, m_right, m_bottom, m_top, m_near, m_far);
 	/* =================== END YOUR CODE HERE ====================== */
 	updateFrustumPlanes();
 }
@@ -142,7 +146,7 @@ void Camera::setViewTrfm() {
 	updateFrustumPlanes();
 }
 
-// @@ TODO:
+// @@ DONE:
 /**
  * Calculate (R, U, D) vectors of the camera frame given (E, At, Up)
  *
@@ -150,7 +154,13 @@ void Camera::setViewTrfm() {
 
 void Camera::updateFrame () {
 	/* =================== PUT YOUR CODE HERE ====================== */
-
+	m_D = m_E - m_At;
+	m_D.normalize();
+	m_R = m_Up;
+	m_R.normalize();
+	m_R.cross(m_D);
+	m_U = m_D;
+	m_U.cross(m_R);
 	/* =================== END YOUR CODE HERE ====================== */
 	setViewTrfm();
 }
