@@ -191,7 +191,7 @@ void Trfm3D::clone( const Trfm3D *T ) {	clone(*T); }
 ////////////////////////////////////////////////////////////////////////////////////
 // Transform points, vectors, planes ...
 
-// @@ TODO. Transform a point
+// @@ DONE. Transform a point
 //
 // IMPORTANT NOTE: suppose that m_w == 1
 
@@ -203,7 +203,7 @@ Vector3 Trfm3D::transformPoint(const Vector3 & P) const {
 	return res;
 }
 
-// @@ TODO. Transform a vector.
+// @@ DONE. Transform a vector.
 //
 // IMPORTANT NOTE: suppose that m_w == 1
 //
@@ -396,13 +396,13 @@ void Trfm3D::setScale(float scale ) {
 	m_w  = 1.0f;
 }
 
-// @@ TODO: Rotate angle radians about an axis defined by vector and located at point
+// @@ DONE: Rotate angle radians about an axis defined by vector and located at point
 //
 
 void Trfm3D::setRotAxis(const Vector3 & V, const Vector3 & P, float angle ) {
-	addTrans(P);
-	setRotVec(V, angle);
 	addTrans(-1 * P);
+	setRotVec(V, angle);
+	addTrans(P);
 }
 
 
