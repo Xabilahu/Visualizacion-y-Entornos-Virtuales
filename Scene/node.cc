@@ -474,15 +474,18 @@ const Node *Node::checkCollision(const BSphere *bsph) const {
 	if (!m_checkCollision) return 0;
 	/* =================== PUT YOUR CODE HERE ====================== */
 
-	if (m_gObject != 0 && BSphereBBoxIntersect(bsph, m_containerWC) == IINTERSECT) return this;
+	int intersects = BSphereBBoxIntersect(bsph, m_containerWC);
 
-	for(list<Node *>::const_iterator it = m_children.begin(), end = m_children.end();
-       it != end; ++it) {
-       	const Node *theChild = *it;
-		const Node *collidingNode = theChild->checkCollision(bsph);
-		if (collidingNode != 0) return collidingNode;
+	if (intersects != IINTERSECT) return 0;
+	else if (m_gObject != 0) return this;
+	else {
+		for(list<Node *>::const_iterator it = m_children.begin(), end = m_children.end();
+		it != end; ++it) {
+			const Node *theChild = *it;
+			const Node *collidingNode = theChild->checkCollision(bsph);
+			if (collidingNode != 0) return collidingNode;
+		}
+		return 0; /* No collision */
 	}
-
-	return 0; /* No collision */
 	/* =================== END YOUR CODE HERE ====================== */
 }
