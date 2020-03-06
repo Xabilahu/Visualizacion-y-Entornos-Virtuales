@@ -458,6 +458,22 @@ void Node::setCulled(bool culled) {
 //          update m_isCulled accordingly.
 
 void Node::frustumCull(Camera *cam) {
+	unsigned int planesBitMask = 0;
+	switch(cam->checkFrustum(m_containerWC, &planesBitMask)){
+		case -1:
+			m_isCulled = false;
+			break;
+		case 1:
+			m_isCulled = true;
+			break;
+		case 0:
+			for(list<Node *>::iterator it = m_children.begin(), end = m_children.end();
+				it != end; ++it) {
+				Node *theChild = *it;
+				theChild->frustumCull(cam);
+			}
+			break;
+	}
 }
 
 // @@ DONE: Check whether a BSphere (in world coordinates) intersects with a
