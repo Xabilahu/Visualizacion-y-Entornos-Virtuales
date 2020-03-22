@@ -1,6 +1,7 @@
 #include <cassert>
 #include <cstdio>
 #include <cstdlib>
+#include <cmath>
 #include "line.h"
 #include "constants.h"
 #include "tools.h"
@@ -42,6 +43,8 @@ Vector3 Line::at(float u) const {
 
 float Line::paramDistance(const Vector3 & P) const {
 	float res = 0.0f;
+	res = m_d.dot(m_d);
+	assert(fabs(res) > Vector3::epsilon);
 	res = m_d.dot((P - m_O)) / (m_d.dot(m_d));
 	return res;
 }
