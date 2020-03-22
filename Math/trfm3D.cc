@@ -398,13 +398,12 @@ void Trfm3D::setScale(float scale ) {
 
 // @@ DONE: Rotate angle radians about an axis defined by vector and located at point
 //
-
+// The order is because of modelview is a stack
 void Trfm3D::setRotAxis(const Vector3 & V, const Vector3 & P, float angle ) {
+	setTrans(P); //Clear transformation and set translation
+	addRotVec(V, angle);
 	addTrans(-1 * P);
-	setRotVec(V, angle);
-	addTrans(P);
 }
-
 
 void Trfm3D::setOrtho(float left, float right,
 					  float bottom, float top,
