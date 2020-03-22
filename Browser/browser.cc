@@ -22,6 +22,7 @@ static int prevTime;
 // Global variables mouse
 static int mouse_pre_x = -1;
 static int mouse_pre_y = -1;
+static float dt = 0;
 
 static void switchAllLights(bool onOff) {
 	for(LightManager::iterator it = LightManager::instance()->begin(), end = LightManager::instance()->end();
@@ -538,8 +539,11 @@ void animate(int value) {
 
 	// ##### REPLACE WITH YOUR OWN GAME/APP MAIN CODE HERE #####
 	if (runAnimation) {
-		// Force a redisplay to render the new image
+		dt += 0.1;
+		if (dt > 10) dt =0.0;
+		RenderState::instance()->setSc(dt);
 
+		// Force a redisplay to render the new image
 		glutPostRedisplay();
 	}
 	// ##### END OF GAME/APP MAIN CODE #####

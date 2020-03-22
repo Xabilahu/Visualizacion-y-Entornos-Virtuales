@@ -205,7 +205,7 @@ void ShaderProgram::beforeDraw() {
 	this->send_uniform("modelToWorldMatrix", rs->top(RenderState::model));
 	this->send_uniform("cameraToClipMatrix", rs->top(RenderState::projection));
 	this->send_uniform("modelToClipMatrix", rs->top(RenderState::modelview_projection));
-
+	if (this->has_capability("sc")) this->send_uniform("sc", rs->getSc());
 	this->send_uniform("scene_ambient", rs->getSceneAmbient());
 
 	int i = 0;

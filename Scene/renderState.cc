@@ -192,3 +192,7 @@ void RenderState::print() const {
 	printf("Shader: %s\n", m_activeShader ? m_activeShader->getName() : "NULL");
 	bool m_drawBBox;
 }
+
+float RenderState::getSc() const {return m_sc;}
+
+void RenderState::setSc(float v) {m_sc = v;}

@@ -194,6 +194,10 @@ public:
 
 	void print() const;
 
+	//Functions handling new uniform variable
+	float getSc() const;
+	void setSc(float v);
+
 private:
 	RenderState();
 	~RenderState();
@@ -230,4 +234,7 @@ private:
 	// SkyBox
 
 	Node *m_skybox;
+
+	//New uniform variable
+	float m_sc;
 };
