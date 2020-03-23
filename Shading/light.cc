@@ -90,6 +90,11 @@ void Light::placeScene() {
 
 	/* =================== PUT YOUR CODE HERE ====================== */
 
+	if (m_type == spotlight) m_spotDirectionEye = modelView.transformVector(m_spotDirection);
+
+	if (m_type == positional) m_positionEye = modelView.transformPoint(m_position);
+	else m_positionEye = modelView.transformVector(m_position);
+
 	/* =================== END YOUR CODE HERE ====================== */
 }
 
