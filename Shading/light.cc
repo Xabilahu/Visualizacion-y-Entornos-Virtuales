@@ -76,7 +76,7 @@ const float *Light::getPositionEye_4fv() const {
 }
 
 /**
- * @@ TODO: Place the light into the scene. Store the result into positionEye and spotDirectionEye.
+ * @@ DONE: Place the light into the scene. Store the result into positionEye and spotDirectionEye.
  *
  * hints:
  *        - multiply position with current modelView matrix
@@ -92,8 +92,10 @@ void Light::placeScene() {
 
 	if (m_type == spotlight) m_spotDirectionEye = modelView.transformVector(m_spotDirection);
 
-	if (m_type == positional) m_positionEye = modelView.transformPoint(m_position);
-	else m_positionEye = modelView.transformVector(m_position);
+	if (m_type == directional) {
+		m_positionEye = modelView.transformVector(m_position);
+		m_positionEye.normalize();
+	} else m_positionEye = modelView.transformPoint(m_position);
 
 	/* =================== END YOUR CODE HERE ====================== */
 }
