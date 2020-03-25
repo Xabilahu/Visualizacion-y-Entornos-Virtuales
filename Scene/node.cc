@@ -297,8 +297,8 @@ void Node::detach() {
 //    - placementWC of node and parents are up-to-date
 
 void Node::propagateBBRoot() {
+	updateBB();
 	if (m_parent != 0){
-		updateBB();
 		m_parent->propagateBBRoot();
 	}
 }
@@ -454,7 +454,7 @@ void Node::setCulled(bool culled) {
 	}
 }
 
-// @@ TODO: Frustum culling. See if a subtree is culled by the camera, and
+// @@ DONE: Frustum culling. See if a subtree is culled by the camera, and
 //          update m_isCulled accordingly.
 
 void Node::frustumCull(Camera *cam) {
@@ -467,6 +467,7 @@ void Node::frustumCull(Camera *cam) {
 			m_isCulled = true;
 			break;
 		case 0:
+			m_isCulled = false;
 			for(list<Node *>::iterator it = m_children.begin(), end = m_children.end();
 				it != end; ++it) {
 				Node *theChild = *it;
