@@ -31,6 +31,7 @@ attribute vec2 v_texCoord;
 
 varying vec4 f_color;
 varying vec2 f_texCoord;
+varying vec4 f_spec;
 
 const float epsilon = 0.0001;
 
@@ -107,7 +108,9 @@ void main() {
 		}
 	}
 
-	f_color.rgb = scene_ambient + diffuse_color * theMaterial.diffuse + specular_color * theMaterial.specular;
+	f_spec.rgb = specular_color * theMaterial.specular;
+	f_spec.a = 1.0;
+	f_color.rgb = scene_ambient + diffuse_color * theMaterial.diffuse;
 	f_color.a = 1.0;
 
 	f_texCoord = v_texCoord;
