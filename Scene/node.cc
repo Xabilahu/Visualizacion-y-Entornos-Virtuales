@@ -458,7 +458,7 @@ void Node::setCulled(bool culled) {
 //          update m_isCulled accordingly.
 
 void Node::frustumCull(Camera *cam) {
-	unsigned int planesBitMask = 0;
+	unsigned int planesBitMask = 0; //Debugging usage
 	switch(cam->checkFrustum(m_containerWC, &planesBitMask)){
 		case -1:
 			m_isCulled = false;
@@ -475,6 +475,7 @@ void Node::frustumCull(Camera *cam) {
 			}
 			break;
 	}
+	this->setCulled(m_isCulled);
 }
 
 // @@ DONE: Check whether a BSphere (in world coordinates) intersects with a
