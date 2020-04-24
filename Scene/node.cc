@@ -460,13 +460,13 @@ void Node::setCulled(bool culled) {
 void Node::frustumCull(Camera *cam) {
 	unsigned int planesBitMask = 0; //Debugging usage
 	switch(cam->checkFrustum(m_containerWC, &planesBitMask)){
-		case -1:
-			m_isCulled = false;
+		case -IREJECT: //Fully inside
+			this->setCulled(false);
 			break;
-		case 1:
-			m_isCulled = true;
+		case IREJECT: //Fully outside
+			this->setCulled(true);
 			break;
-		case 0:
+		case IINTERSECT: // Intersecting -> check children
 			m_isCulled = false;
 			for(list<Node *>::iterator it = m_children.begin(), end = m_children.end();
 				it != end; ++it) {
@@ -475,7 +475,6 @@ void Node::frustumCull(Camera *cam) {
 			}
 			break;
 	}
-	this->setCulled(m_isCulled);
 }
 
 // @@ DONE: Check whether a BSphere (in world coordinates) intersects with a
