@@ -317,19 +317,20 @@ void  Camera::arcLeftRight(float angle) {
 
 int Camera::checkFrustum(const BBox *theBBox, unsigned int *planesBitM) {
 	bool intersects = false;
+	//planesBitM is used for debugging purposes
 	for (int i = 0; i < MAX_CLIP_PLANES; i++){
 		switch(BBoxPlaneIntersect(theBBox, m_fPlanes[i])){
 			case -IREJECT: //Fully inside
-				*planesBitM |= 1 << i; // 1 << i generates 0b0000...1...0 where 1 is set at position i (or usage to flip it to true)
 				break;
 			case +IREJECT: //Fully outside
+				*planesBitM |= 1 << i; // 1 << i generates 0b0000...1...0 where 1 is set at position i (or usage to flip it to true)
 				return +1;
 			case IINTERSECT: //Intersects
 				intersects = true;
 				break;
 		}
 	}
-	return !intersects ? -1 : 0;
+	return !intersects ? -IREJECT : IINTERSECT;
 }
 
 /////////////////////////////////////////////////////////////////////////////////////
