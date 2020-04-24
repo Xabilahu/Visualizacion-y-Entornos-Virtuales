@@ -40,17 +40,17 @@ float lambert_factor(vec3 n, vec3 l){ //normalized vecs
 }
 
 float specular_factor(vec3 n, vec3 l, vec3 v, float m){
-	vec3 r = 2 * dot(n, l) * n - l;
-	float dotP = dot(r, v);
-	if (dotP > 0)
-		return max(0.0, pow(dotP, m));
+	vec3 r = normalize(2 * dot(n, l) * n - l);
+	float RoV = dot(r, v);
+	if (RoV > 0)
+		return max(0.0, pow(RoV, m));
 	else
 		return 0.0;
 }
 
 float attenuation_factor(int index, float d){
 	float denom = theLights[index].attenuation[0] + theLights[index].attenuation[1] * d + theLights[index].attenuation[2] * d * d;
-	if (denom > 0) return 1 / denom;
+	if (denom > epsilon) return 1 / denom;
 	else return 1;
 }
 
@@ -73,13 +73,11 @@ void spotLight(int i, float d, vec3 lightDirection, vec3 viewDirection, vec3 nor
 	float cspot, diffuse_factor;
 	float SoL = max(0.0, dot(-lightDirection, theLights[i].spotDir));
 
-	if (theLights[i].cosCutOff < SoL){
-		if (SoL > 0) cspot = pow(SoL, theLights[i].exponent);
-		else cspot = 1;
-		float att = attenuation_factor(i, d);
+	if (theLights[i].cosCutOff < SoL && SoL > epsilon){
+		cspot = pow(SoL, theLights[i].exponent);
 		diffuse_factor = lambert_factor(normal, lightDirection);
 		diffuse += diffuse_factor * theLights[i].diffuse * cspot;
-		specular += specular_factor(normal, lightDirection, viewDirection, theMaterial.shininess) * theLights[i].specular * diffuse_factor * cspot * att;
+		specular += specular_factor(normal, lightDirection, viewDirection, theMaterial.shininess) * theLights[i].specular * diffuse_factor * cspot;
 	}
 }
 
