@@ -385,7 +385,7 @@ void Node::updateWC() {
 
 void Node::updateGS() {
 	updateWC();
-	if (m_parent != 0) propagateBBRoot();
+	if (m_parent != 0) m_parent->propagateBBRoot();
 }
 
 // @@ DONE:

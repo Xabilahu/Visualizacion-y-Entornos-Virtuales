@@ -34,18 +34,18 @@ float lambert_factor(vec3 n, vec3 l){ //normalized vecs
 }
 
 float specular_factor(vec3 n, vec3 l, vec3 v, float m){
-	vec3 r = normalize(2 * dot(n, l) * n - l);
+	vec3 r = normalize(2.0 * dot(n, l) * n - l);
 	float RoV = dot(r, v);
-	if (RoV > epsilon)
-		return max(0.0, pow(RoV, m));
-	else
-		return 0.0;
+	float returnValue = 0.0;
+	if (RoV > epsilon) returnValue = pow(RoV, m);
+	return returnValue;
 }
 
 float attenuation_factor(int index, float d){
 	float denom = theLights[index].attenuation[0] + theLights[index].attenuation[1] * d + theLights[index].attenuation[2] * d * d;
-	if (denom > epsilon) return 1 / denom;
-	else return 1;
+	float returnValue = 1.0;
+	if (denom > epsilon) returnValue = 1.0 / denom;
+	return returnValue;
 }
 
 void directionalLight(int i, vec3 viewDirection, vec3 normal, inout vec3 diffuse, inout vec3 specular) {
@@ -67,36 +67,35 @@ void spotLight(int i, float d, vec3 lightDirection, vec3 viewDirection, vec3 nor
 	float cspot, diffuse_factor;
 	float SoL = max(0.0, dot(-lightDirection, theLights[i].spotDir));
 
-	if (theLights[i].cosCutOff < SoL && SoL > epsilon){
-		cspot = pow(SoL, theLights[i].exponent);
-		diffuse_factor = lambert_factor(normal, lightDirection);
-		diffuse += diffuse_factor * theLights[i].diffuse * cspot;
-		specular += specular_factor(normal, lightDirection, viewDirection, theMaterial.shininess) * theLights[i].specular * diffuse_factor * cspot;
+	if (theLights[i].cosCutOff < SoL) { 
+		if (SoL > epsilon){
+			cspot = pow(SoL, theLights[i].exponent);
+			diffuse_factor = lambert_factor(normal, lightDirection);
+			diffuse += diffuse_factor * theLights[i].diffuse * cspot;
+			specular += specular_factor(normal, lightDirection, viewDirection, theMaterial.shininess) * theLights[i].specular * diffuse_factor * cspot;
+		}
 	}
 }
 
 void main() {
 	vec4 color, spec, texColor;
 	vec3 positionEye, normalEye, L, diffuse_color, specular_color, v;
-	float d;
+	float d; int i;
 	positionEye = f_position; 
 	normalEye = normalize(f_normal);
 	diffuse_color = vec3(0.0);
 	specular_color = vec3(0.0);
 	v = normalize(f_viewDirection);
 
-	for (int i = 0; i < active_lights_n; i++){
-		if (theLights[i].position[3] == 0) { //Directional light
+	for (i = 0; i < active_lights_n; i++){
+		if (theLights[i].position[3] == 0.0) { //Directional light
 			directionalLight(i, v, normalEye, diffuse_color, specular_color);
 		} else {
-			d = length(theLights[i].position.xyz - positionEye);
-			if (d > epsilon) { //Check denominator to avoid dividing by 0
-				L = normalize(theLights[i].position.xyz - positionEye);
-				if (theLights[i].cosCutOff < epsilon){ //Positional light (spotCutOff = 90 -> cosSpotCutOff = 0)
-					positionalLight(i, d, L, v, normalEye, diffuse_color, specular_color);
-				} else {
-					spotLight(i, d, L, v, normalEye, diffuse_color, specular_color);
-				}
+			L = normalize(theLights[i].position.xyz - positionEye);
+			if (theLights[i].cosCutOff < epsilon){ //Positional light (spotCutOff = 90 -> cosSpotCutOff = 0)
+				positionalLight(i, d, L, v, normalEye, diffuse_color, specular_color);
+			} else {
+				spotLight(i, d, L, v, normalEye, diffuse_color, specular_color);
 			}
 		}
 	}
