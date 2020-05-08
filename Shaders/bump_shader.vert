@@ -6,6 +6,7 @@
 attribute vec3 v_position;
 attribute vec3 v_normal;
 attribute vec2 v_texCoord;
+// Tanget and Bitangent calculus at triangleMesh::tangentTriangle
 attribute vec3 v_TBN_t;
 attribute vec3 v_TBN_b;
 
@@ -35,6 +36,35 @@ varying vec3 f_viewDirection;     // tangent space
 varying vec3 f_lightDirection[4]; // tangent space
 varying vec3 f_spotDirection[4];  // tangent space
 
+const float epsilon = 0.0001;
+
+// Code based in:
+// - http://fabiensanglard.net/bumpMapping/index.php
+// - http://www.opengl-tutorial.org/es/intermediate-tutorials/tutorial-13-normal-mapping/
 void main() {
+	mat4 cameraToTangentMatrix; // Othonormal matrix -> Inverse = Transpose
+	cameraToTangentMatrix[0] = modelToCameraMatrix * vec4(v_normal, 0.0);
+	cameraToTangentMatrix[1] = modelToCameraMatrix * vec4(v_TBN_b, 0.0);
+	cameraToTangentMatrix[2] = modelToCameraMatrix * vec4(v_TBN_t, 0.0);
+	cameraToTangentMatrix[3] = modelToCameraMatrix * vec4(0.0, 0.0, 0.0, 1.0);
+
+	int i; vec3 tangentPosition, tangentLightPosition;
+	tangentPosition = (cameraToTangentMatrix * modelToCameraMatrix * (vec4(v_position, 1.0))).xyz;
+	f_viewDirection = -tangentPosition;
+	
+	for(i = 0; i < active_lights_n; i++) {
+		tangentLightPosition = (cameraToTangentMatrix * theLights[i].position).xyz;
+		if (theLights[i].position[3] == 0){ // Directional Light
+			f_lightDirection[i] = normalize(-tangentLightPosition);
+		} else { // Positional or Spotlight
+			f_lightDirection[i] = normalize(tangentLightPosition - tangentPosition);
+			if (theLights[i].cosCutOff > epsilon) { // Spotlight
+				// No need to normalize, as orthogonal matrices maintain vector norm (spotDir is unit vector)
+				f_spotDirection[i] = (cameraToTangentMatrix * vec4(theLights[i].spotDir, 0.0)).xyz;
+			}
+		}
+	}
+
+	f_texCoord = v_texCoord;
 	gl_Position = modelToClipMatrix * vec4(v_position, 1.0);
 }

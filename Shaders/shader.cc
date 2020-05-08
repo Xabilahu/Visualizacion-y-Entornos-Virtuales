@@ -67,7 +67,7 @@ void ShaderProgram::initDefaultUniforms() {
 	init_uniform(m_uniforms, "theMaterial.alpha", Uniform::type::ufloat, m_name, m_program);
 
 	init_uniform(m_uniforms, "texture0", Uniform::type::usampler, m_name, m_program);
-	//init_uniform(m_uniforms, "bumpmap", Uniform::type::usampler, m_name, m_program);
+	init_uniform(m_uniforms, "bumpmap", Uniform::type::usampler, m_name, m_program);
 	//init_uniform(m_uniforms, "cubemap", Uniform::type::usampler, m_name, m_program);
 
 	init_uniform(m_uniforms, "modelToCameraMatrix", Uniform::type::umat4, m_name, m_program);
@@ -197,7 +197,7 @@ template<class V> void ShaderProgram::send_uniform(const std::string uname, cons
 void ShaderProgram::beforeDraw() {
 
 	Material *mat;
-	Texture *tex;
+	Texture *tex, *bmp;
 	RenderState *rs = RenderState::instance();
 	static char buffer[1024];
 
@@ -251,6 +251,12 @@ void ShaderProgram::beforeDraw() {
 			// Set texture to unit 0
 			tex->bindGLUnit(Constants::gl_texunits::texture);
 			this->send_uniform("texture0", Constants::gl_texunits::texture); // Texture unit 0
+		}
+		bmp = mat->getBumpMap();
+		if (bmp != 0) {
+			// Set texture to unit 1
+			bmp->bindGLUnit(Constants::gl_texunits::bump);
+			this->send_uniform("bumpmap", Constants::gl_texunits::bump); // Texture unit 1
 		}
 	}
 }
