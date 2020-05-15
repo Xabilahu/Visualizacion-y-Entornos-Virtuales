@@ -11,6 +11,7 @@ RenderState *RenderState::instance() {
 RenderState::RenderState() :
 	m_frontMaterial(0),
 	m_backMaterial(0),
+	m_camera(0),
 	m_ambient(Vector3(0.05f, 0.05f, 0.05)),
 	m_activeShader(0),
 	m_drawBBox(false) {}
@@ -114,6 +115,12 @@ void RenderState::setShader(ShaderProgram *program) {
 ShaderProgram *RenderState::getShader() {
 	return m_activeShader;
 }
+
+///////////////////////////////////////////
+// Camera
+
+void RenderState::setCamera(Camera *cam) { m_camera = cam; }
+Camera *RenderState::getCamera() const { return m_camera; }
 
 ///////////////////////////////////////////
 // Lights
