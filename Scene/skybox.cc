@@ -14,7 +14,7 @@
 using std::vector;
 using std::string;
 
-// TODO: create skybox object given gobject, shader name of cubemap texture.
+// DONE: create skybox object given gobject, shader name of cubemap texture.
 //
 // This function does the following:
 //
@@ -58,11 +58,25 @@ void CreateSkybox(GObject *gobj,
 		exit(1);
 	}
 	/* =================== PUT YOUR CODE HERE ====================== */
+	string uniqueMat = "skyboxCubeMap#Material";
+	string uniqueNode = "skyboxCubeMap#Node";
+	MaterialManager *matM =  MaterialManager::instance();
+	NodeManager *nodeM = NodeManager::instance();
 
+	// The Skybox is only created if no other exists
+	if (matM->find(uniqueMat) == 0 && nodeM->find(uniqueNode) == 0) {
+		Material *skyMaterial = matM->create(uniqueMat);
+		skyMaterial->setTexture(ctex);
+		gobj->setMaterial(skyMaterial);
+		Node *skyNode = nodeM->create(uniqueNode);
+		skyNode->attachShader(skyshader);
+		skyNode->attachGobject(gobj);
+		RenderState::instance()->setSkybox(skyNode);
+	}
 	/* =================== END YOUR CODE HERE ====================== */
 }
 
-// TODO: display the skybox
+// FIXME: display the skybox
 //
 // This function does the following:
 //
@@ -99,6 +113,19 @@ void DisplaySky(Camera *cam) {
 	if (!skynode) return;
 
 	/* =================== PUT YOUR CODE HERE ====================== */
-
+	// Skybox is only displayed if there is an object attached to it
+	if (skynode->getGobject() != 0) {
+		ShaderProgram *prevShader = rs->getShader();
+		rs->push(RenderState::modelview);
+		Trfm3D translation;
+		translation.setTrans(cam->getPosition());
+		rs->addTrfm(RenderState::modelview, &translation);
+		glDisable(GL_DEPTH_TEST);
+		rs->setShader(skynode->getShader());
+		skynode->getGobject()->draw();
+		rs->pop(RenderState::modelview);
+		glEnable(GL_DEPTH_TEST);
+		rs->setShader(prevShader);
+	}
 	/* =================== END YOUR CODE HERE ====================== */
 }
