@@ -425,6 +425,7 @@ void Node::draw() {
 	if (m_gObject != 0) {
 		rs->push(RenderState::modelview);
 		rs->addTrfm(RenderState::modelview, m_placementWC);
+		rs->loadTrfm(RenderState::model, m_placementWC);
 		m_gObject->draw();
 		rs->pop(RenderState::modelview);
 	} else {

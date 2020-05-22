@@ -197,7 +197,7 @@ template<class V> void ShaderProgram::send_uniform(const std::string uname, cons
 void ShaderProgram::beforeDraw() {
 
 	Material *mat;
-	Texture *tex, *bmp;
+	Texture *tex, *env;
 	RenderState *rs = RenderState::instance();
 	static char buffer[1024];
 
@@ -248,16 +248,14 @@ void ShaderProgram::beforeDraw() {
 		this->send_uniform("theMaterial.alpha", mat->getAlpha());
 		tex = mat->getTexture();
 		if (tex != 0) {
-			// Set texture to unit 0
 			tex->bindGLUnit(Constants::gl_texunits::texture);
-			this->send_uniform("texture0", Constants::gl_texunits::texture); // Texture unit 0
+			this->send_uniform("texture0", Constants::gl_texunits::texture);
 		}
 		if (has_capability("bump")) {
-			bmp = mat->getBumpMap();
-			if (bmp != 0) {
-				// Set texture to unit 1
-				bmp->bindGLUnit(Constants::gl_texunits::bump);
-				this->send_uniform("bumpmap", Constants::gl_texunits::bump); // Texture unit 1
+			tex = mat->getBumpMap();
+			if (tex != 0) {
+				tex->bindGLUnit(Constants::gl_texunits::bump);
+				this->send_uniform("bumpmap", Constants::gl_texunits::bump);
 			}
 		}
 		if (has_capability("specmap")){
@@ -266,6 +264,12 @@ void ShaderProgram::beforeDraw() {
 				tex->bindGLUnit(Constants::gl_texunits::specular);
 				this->send_uniform("specmap", Constants::gl_texunits::specular);
 			}
+		}
+		env = TextureManager::instance()->find("CubeEnv");
+		if (env != 0 && has_capability("cube_env")){
+			env->bindGLUnit(Constants::gl_texunits::envmap);
+			this->send_uniform("envmap", Constants::gl_texunits::envmap);
+			this->send_uniform("campos", RenderState::instance()->getCamera()->getPosition());
 		}
 	}
 }
